@@ -1,9 +1,10 @@
 ---
 id: KIRO-001
 title: Allow a user to see the Tools available through each active MCP server
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2026-03-02 22:46'
+updated_date: '2026-03-02 22:54'
 labels: []
 dependencies: []
 ---
