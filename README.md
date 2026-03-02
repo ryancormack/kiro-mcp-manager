@@ -4,8 +4,6 @@ A lightweight macOS menu bar app for managing your [Kiro CLI](https://kiro.dev/d
 
 No more editing JSON by hand or trying to remember which servers are enabled. Just click the **K** in your menu bar.
 
-![Screenshot](screenshot.png)
-
 ![macOS](https://img.shields.io/badge/macOS-26.1+-blue)
 ![Swift](https://img.shields.io/badge/Swift-5-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -21,6 +19,10 @@ This app puts that config in your menu bar so you can:
 - **See whether each server is local or remote**
 - **Toggle servers on and off** with a single click
 - **Open the config file** in your default editor when you need to make deeper changes
+
+<p align="center">
+  <img src="screenshot.png" alt="Screenshot" width="320">
+</p>
 
 ## Important: Kiro CLI doesn't hot-reload
 
