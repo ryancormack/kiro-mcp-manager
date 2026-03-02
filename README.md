@@ -18,6 +18,7 @@ This app puts that config in your menu bar so you can:
 - **Check which are enabled or disabled**
 - **See whether each server is local or remote**
 - **Toggle servers on and off** with a single click
+- **Disable specific tools** without disabling the whole server
 - **Open the config file** in your default editor when you need to make deeper changes
 
 <p align="center">
@@ -60,10 +61,25 @@ Click the **K** in your menu bar to see your servers:
 
 - Each server shows its **name**, **type** (Local or Remote), and an **on/off toggle**
 - Flip a toggle to set `"disabled": true` or `"disabled": false` in the config
+- Click the **chevron** next to a server to expand and manage individual tools
 - Click **Edit Config…** to open the JSON file in your default editor
 - Click **Quit** to close the app
 
 The server list refreshes every time you open the menu.
+
+### Disabling specific tools
+
+Sometimes you want to keep an MCP server enabled but block certain tools. For example, when Kiro CLI asks to use a tool you'd rather it didn't:
+
+1. Click the **chevron** next to the server name to expand it
+2. Type the tool name in the text field (exactly as shown in the CLI prompt)
+3. Click **Add**
+
+The tool is now in the `disabledTools` array and won't be offered to the agent.
+
+To re-enable a tool, expand the server and click **Enable** next to the tool name.
+
+> **Tip:** Run `/mcp` in a Kiro CLI session to see all available tools for each server.
 
 ## How it works
 

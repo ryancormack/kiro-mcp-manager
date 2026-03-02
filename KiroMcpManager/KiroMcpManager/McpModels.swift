@@ -74,6 +74,23 @@ struct McpServer: Codable, Sendable {
     var isRemote: Bool { fields["url"] != nil }
 
     var serverType: String { isRemote ? "Remote" : "Local" }
+
+    var disabledTools: [String] {
+        guard case .array(let arr) = fields["disabledTools"] else { return [] }
+        return arr.compactMap { if case .string(let s) = $0 { return s } else { return nil } }
+    }
+
+    mutating func setDisabledTools(_ tools: [String]) {
+        if tools.isEmpty {
+            fields.removeValue(forKey: "disabledTools")
+        } else {
+            fields["disabledTools"] = .array(tools.map { .string($0) })
+        }
+    }
+
+    func isToolDisabled(_ tool: String) -> Bool {
+        disabledTools.contains(tool)
+    }
 }
 
 // MARK: - McpConfig

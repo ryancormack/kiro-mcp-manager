@@ -27,9 +27,14 @@ struct MenuContentView: View {
                     .padding(12)
             } else {
                 ForEach(manager.servers, id: \.name) { entry in
-                    ServerRow(name: entry.name, server: entry.server) {
-                        manager.toggleServer(name: entry.name)
-                    }
+                    ServerRow(
+                        name: entry.name,
+                        server: entry.server,
+                        disabledTools: manager.tools[entry.name] ?? [],
+                        onToggle: { manager.toggleServer(name: entry.name) },
+                        onToggleTool: { tool in manager.toggleTool(serverName: entry.name, tool: tool) },
+                        onAddTool: { tool in manager.addDisabledTool(serverName: entry.name, tool: tool) }
+                    )
                 }
             }
 
@@ -57,25 +62,94 @@ struct MenuContentView: View {
 private struct ServerRow: View {
     let name: String
     let server: McpServer
+    let disabledTools: [String]
     let onToggle: () -> Void
+    let onToggleTool: (String) -> Void
+    let onAddTool: (String) -> Void
+
+    @State private var isExpanded = false
+    @State private var newToolName = ""
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            HStack {
+                Button(action: { isExpanded.toggle() }) {
+                    Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
+                        .font(.caption)
+                        .frame(width: 12)
+                }
+                .buttonStyle(.plain)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(name).fontWeight(.medium)
+                    Text(server.serverType)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Toggle("", isOn: Binding(
+                    get: { !server.isDisabled },
+                    set: { _ in onToggle() }
+                ))
+                .toggleStyle(.switch)
+                .labelsHidden()
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+
+            if isExpanded {
+                VStack(alignment: .leading, spacing: 4) {
+                    if disabledTools.isEmpty {
+                        Text("No tools disabled")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .padding(.vertical, 4)
+                    } else {
+                        ForEach(disabledTools, id: \.self) { tool in
+                            ToolRow(tool: tool, onRemove: { onToggleTool(tool) })
+                        }
+                    }
+
+                    HStack(spacing: 4) {
+                        TextField("Tool name to disable", text: $newToolName)
+                            .textFieldStyle(.roundedBorder)
+                            .font(.caption)
+                        Button("Add") {
+                            onAddTool(newToolName)
+                            newToolName = ""
+                        }
+                        .disabled(newToolName.trimmingCharacters(in: .whitespaces).isEmpty)
+                        .font(.caption)
+                    }
+                    .padding(.top, 4)
+                }
+                .padding(.horizontal, 12)
+                .padding(.leading, 12)
+                .padding(.bottom, 8)
+            }
+        }
+    }
+}
+
+private struct ToolRow: View {
+    let tool: String
+    let onRemove: () -> Void
 
     var body: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(name).fontWeight(.medium)
-                Text(server.serverType)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
+            Image(systemName: "xmark.circle.fill")
+                .foregroundStyle(.red.opacity(0.7))
+                .font(.caption)
+            Text(tool)
+                .font(.caption)
+                .foregroundStyle(.secondary)
             Spacer()
-            Toggle("", isOn: Binding(
-                get: { !server.isDisabled },
-                set: { _ in onToggle() }
-            ))
-            .toggleStyle(.switch)
-            .labelsHidden()
+            Button("Enable") {
+                onRemove()
+            }
+            .font(.caption)
+            .buttonStyle(.borderless)
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 6)
+        .padding(.vertical, 2)
     }
 }
