@@ -4,6 +4,8 @@ A lightweight macOS menu bar app for managing your [Kiro CLI](https://kiro.dev/d
 
 No more editing JSON by hand or trying to remember which servers are enabled. Just click the **K** in your menu bar.
 
+![Screenshot](screenshot.png)
+
 ![macOS](https://img.shields.io/badge/macOS-26.1+-blue)
 ![Swift](https://img.shields.io/badge/Swift-5-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
@@ -44,9 +46,9 @@ The app runs in a sandbox for security. On first launch it will ask you to selec
 
 1. Click the **K** in the menu bar
 2. Click **Select mcp.json…**
-3. Navigate to `~/.kiro/settings/mcp.json` and select it
+3. Navigate to `~/.kiro/settings/` and select the **folder**
 
-This grants the app read/write access to that single file. The permission is remembered across launches.
+This grants the app read/write access to that directory. The permission is remembered across launches.
 
 > **Tip:** Press `Cmd+Shift+.` in the file picker to show hidden files like `.kiro`.
 

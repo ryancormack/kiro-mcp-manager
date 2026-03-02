@@ -8,7 +8,8 @@ final class MCPConfigManager {
     private(set) var errorMessage: String?
     private(set) var hasBookmark: Bool = false
 
-    private let bookmarkKey = "mcpConfigBookmark"
+    private let bookmarkKey = "mcpDirBookmark"
+    private let configFileName = "mcp.json"
 
     init() {
         hasBookmark = UserDefaults.standard.data(forKey: bookmarkKey) != nil
@@ -18,11 +19,11 @@ final class MCPConfigManager {
 
     func requestFileAccess() {
         let panel = NSOpenPanel()
-        panel.title = "Select your Kiro MCP config file"
-        panel.message = "Grant access to ~/.kiro/settings/mcp.json"
-        panel.allowedContentTypes = [.json]
+        panel.title = "Select your Kiro MCP settings folder"
+        panel.message = "Select the folder containing mcp.json (usually ~/.kiro/settings)"
         panel.allowsMultipleSelection = false
-        panel.canChooseDirectories = false
+        panel.canChooseDirectories = true
+        panel.canChooseFiles = false
         panel.directoryURL = FileManager.default.homeDirectoryForCurrentUser
             .appendingPathComponent(".kiro/settings")
 
@@ -42,7 +43,7 @@ final class MCPConfigManager {
         }
     }
 
-    private func resolveBookmark() -> URL? {
+    private func resolveDirectory() -> URL? {
         guard let data = UserDefaults.standard.data(forKey: bookmarkKey) else { return nil }
         do {
             var isStale = false
@@ -53,7 +54,6 @@ final class MCPConfigManager {
                 bookmarkDataIsStale: &isStale
             )
             if isStale {
-                // Re-create bookmark
                 let newData = try url.bookmarkData(
                     options: .withSecurityScope,
                     includingResourceValuesForKeys: nil,
@@ -69,40 +69,46 @@ final class MCPConfigManager {
         }
     }
 
+    private func withConfigURL<T>(_ body: (URL) throws -> T) -> T? {
+        guard let dir = resolveDirectory() else {
+            if errorMessage == nil { errorMessage = "No file access granted" }
+            return nil
+        }
+        guard dir.startAccessingSecurityScopedResource() else {
+            errorMessage = "Could not access folder"
+            return nil
+        }
+        defer { dir.stopAccessingSecurityScopedResource() }
+        let fileURL = dir.appendingPathComponent(configFileName)
+        return try? body(fileURL)
+    }
+
     // MARK: - Read / Write
 
     func loadConfig() {
-        guard let url = resolveBookmark() else {
-            servers = []
-            if errorMessage == nil { errorMessage = "No file access granted" }
-            return
-        }
-
-        guard url.startAccessingSecurityScopedResource() else {
-            errorMessage = "Could not access file"
-            return
-        }
-        defer { url.stopAccessingSecurityScopedResource() }
-
-        do {
+        let result = withConfigURL { url -> Result<[(name: String, server: McpServer)], Error> in
             let data = try Data(contentsOf: url)
             let config = try JSONDecoder().decode(McpConfig.self, from: data)
-            servers = config.mcpServers
+            let sorted = config.mcpServers
                 .sorted { $0.key.localizedCaseInsensitiveCompare($1.key) == .orderedAscending }
                 .map { (name: $0.key, server: $0.value) }
+            return .success(sorted)
+        }
+
+        switch result {
+        case .success(let list):
+            servers = list
             errorMessage = nil
-        } catch {
+        default:
             servers = []
-            errorMessage = "No MCP config found — configure servers in ~/.kiro/settings/mcp.json"
+            if errorMessage == nil {
+                errorMessage = "No MCP config found — configure servers in ~/.kiro/settings/mcp.json"
+            }
         }
     }
 
     func toggleServer(name: String) {
-        guard let url = resolveBookmark() else { return }
-        guard url.startAccessingSecurityScopedResource() else { return }
-        defer { url.stopAccessingSecurityScopedResource() }
-
-        do {
+        withConfigURL { url in
             let data = try Data(contentsOf: url)
             var config = try JSONDecoder().decode(McpConfig.self, from: data)
             guard var server = config.mcpServers[name] else { return }
@@ -111,19 +117,14 @@ final class MCPConfigManager {
 
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-            let newData = try encoder.encode(config)
-            try newData.write(to: url)
-
-            loadConfig()
-        } catch {
-            errorMessage = "Failed to save: \(error.localizedDescription)"
+            try encoder.encode(config).write(to: url)
         }
+        loadConfig()
     }
 
     func openInEditor() {
-        guard let url = resolveBookmark() else { return }
-        guard url.startAccessingSecurityScopedResource() else { return }
-        defer { url.stopAccessingSecurityScopedResource() }
-        NSWorkspace.shared.open(url)
+        withConfigURL { url in
+            NSWorkspace.shared.open(url)
+        }
     }
 }
