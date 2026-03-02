@@ -4,7 +4,7 @@ title: Allow a user to see the Tools available through each active MCP server
 status: Done
 assignee: []
 created_date: '2026-03-02 22:46'
-updated_date: '2026-03-02 22:57'
+updated_date: '2026-03-02 23:24'
 labels: []
 dependencies: []
 ---
@@ -29,6 +29,9 @@ A user should be able to disable specific tools via the Menu Bar UI we have
 <!-- SECTION:PLAN:BEGIN -->
 ## Implementation Summary
 
+### Approach
+Since the app runs in a macOS sandbox, we cannot spawn MCP server processes to auto-discover tools. Instead, the UI shows currently disabled tools from the config and allows manual entry of tool names to disable.
+
 ### Changes Made
 
 1. **McpModels.swift** - Added `disabledTools` support to `McpServer`:
@@ -37,24 +40,35 @@ A user should be able to disable specific tools via the Menu Bar UI we have
    - `isToolDisabled(_:)` helper to check if a specific tool is disabled
 
 2. **MenuContentView.swift** - Updated UI with expandable server rows:
-   - `ServerRow` now shows a chevron disclosure indicator when tools are available
-   - Clicking the chevron expands/collapses the tools list
-   - `ToolRow` component shows each tool with a mini toggle switch
-   - Disabled tools appear with secondary text color
+   - Every server row has a chevron to expand/collapse the tools section
+   - Shows "No tools disabled" when `disabledTools` is empty
+   - Lists disabled tools with red X icon and "Enable" button
+   - Text field + "Add" button to disable a tool by name
 
-3. **MCPConfigManager.swift** - Added tool discovery and toggle functionality:
-   - `tools` dictionary maps server names to their available tools
-   - `toggleTool(serverName:tool:)` adds/removes tools from `disabledTools` array
-   - `discoverTools()` queries enabled local MCP servers via JSON-RPC
-   - Uses MCP protocol's `tools/list` method to get available tools
-   - Environment variable expansion for server config
+3. **MCPConfigManager.swift** - Added tool management:
+   - `tools` dictionary maps server names to their disabled tools
+   - `toggleTool(serverName:tool:)` removes a tool from `disabledTools` (re-enables it)
+   - `addDisabledTool(serverName:tool:)` adds a tool to `disabledTools`
 
 ### How It Works
 
-1. When the menu opens, `loadConfig()` is called
-2. For each enabled local server, the app spawns the MCP server process
-3. Sends JSON-RPC `initialize` and `tools/list` requests
-4. Parses the response to extract tool names
-5. Tools appear in an expandable list under each server
-6. Toggling a tool updates `disabledTools` in mcp.json
+1. Click chevron next to any server to expand
+2. See list of currently disabled tools (or "No tools disabled")
+3. To disable a tool: type the tool name in the text field, click "Add"
+4. To re-enable a tool: click "Enable" next to the disabled tool
+5. Changes are saved to `~/.kiro/settings/mcp.json`
+
+### Limitation
+Users must know the tool name (run `/mcp` in Kiro CLI to see available tools) since auto-discovery is blocked by the macOS sandbox.
 <!-- SECTION:PLAN:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+### Technical Notes
+
+- Attempted MCP server JSON-RPC querying but macOS sandbox blocks process spawning
+- "Broken pipe" errors occurred when trying to communicate with spawned processes
+- Kiro CLI doesn't appear to log MCP tools to a file we could read
+- Final solution: manual tool entry with display of currently disabled tools
+<!-- SECTION:NOTES:END -->
