@@ -4,7 +4,7 @@ title: Add Kiro CLI settings management to UI
 status: Done
 assignee: []
 created_date: '2026-03-02 23:35'
-updated_date: '2026-03-03 09:48'
+updated_date: '2026-03-03 10:01'
 labels:
   - feature
   - ui
@@ -49,18 +49,22 @@ Currently the app only manages `~/.kiro/settings/mcp.json`. Users should also be
 
 <!-- SECTION:FINAL_SUMMARY:BEGIN -->
 ## Summary
-Added Kiro CLI settings management to the menu bar UI.
+Added Kiro CLI settings management to the menu bar UI with a tabbed interface.
 
 ## Changes
-- `SettingsModels.swift` - Defines 18 known settings across 6 categories (Privacy, Chat, Features, Knowledge, API, MCP) with type metadata
-- `SettingsManager.swift` - Reads/writes `~/.kiro/settings.json`, reuses the existing security-scoped bookmark
+- `SettingsModels.swift` - Defines 18 known settings across 6 categories with type metadata and tooltip hints
+- `SettingsManager.swift` - Reads/writes `~/.kiro/settings/cli.json`, reuses the existing security-scoped bookmark
 - `SettingsView.swift` - Collapsible category UI with appropriate controls per type (toggles for bools, text fields for strings/numbers)
-- `MenuContentView.swift` - Added expandable "Settings" section above MCP servers
+- `MenuContentView.swift` - Added segmented tab picker (MCP / Settings) with tab-specific footer buttons
 - `KiroMcpManagerApp.swift` - Instantiates and passes SettingsManager
+- `README.md` - Updated documentation to reflect new Settings tab functionality
 
 ## UI Design
-- Settings appear as a collapsible section at the top of the menu
-- Categories (Privacy, Chat, Features, etc.) expand to show individual settings
+- Segmented control at top switches between MCP and Settings tabs
+- Settings grouped by category (Privacy, Chat, Features, Knowledge, API, MCP)
 - Boolean settings use toggle switches
 - String/number settings use inline text fields that save on blur or Enter
+- Hover tooltips on each setting label
+- "Edit Settings…" button opens cli.json in default editor
+- "Docs" button links to Kiro CLI settings documentation
 <!-- SECTION:FINAL_SUMMARY:END -->
