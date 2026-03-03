@@ -1,9 +1,10 @@
 ---
 id: KIRO-004.03
 title: Add CHANGELOG and document release process
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2026-03-03 21:33'
+updated_date: '2026-03-03 21:34'
 labels: []
 dependencies: []
 parent_task_id: KIRO-004
