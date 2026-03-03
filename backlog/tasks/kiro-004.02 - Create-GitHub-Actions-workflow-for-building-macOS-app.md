@@ -1,10 +1,10 @@
 ---
 id: KIRO-004.02
 title: Create GitHub Actions workflow for building macOS app
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-03-03 21:33'
-updated_date: '2026-03-03 21:34'
+updated_date: '2026-03-03 21:35'
 labels: []
 dependencies: []
 documentation:
@@ -28,8 +28,8 @@ The workflow should:
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Workflow file exists at .github/workflows/release.yml
-- [ ] #2 Workflow triggers only on tags matching v*
-- [ ] #3 Workflow builds the app in Release configuration
-- [ ] #4 Built .app is uploaded as artifact
+- [x] #1 Workflow file exists at .github/workflows/release.yml
+- [x] #2 Workflow triggers only on tags matching v*
+- [x] #3 Workflow builds the app in Release configuration
+- [x] #4 Built .app is uploaded as artifact
 <!-- AC:END -->
