@@ -2,6 +2,9 @@ import SwiftUI
 
 struct MenuContentView: View {
     @Bindable var manager: MCPConfigManager
+    @Bindable var settingsManager: SettingsManager
+    
+    @State private var selectedTab = 0
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -15,34 +18,40 @@ struct MenuContentView: View {
                 }
                 .padding(.horizontal, 12)
                 .padding(.bottom, 8)
-            } else if let error = manager.errorMessage {
-                Text(error)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .padding(12)
-            } else if manager.servers.isEmpty {
-                Text("No MCP servers configured")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .padding(12)
             } else {
-                ForEach(manager.servers, id: \.name) { entry in
-                    ServerRow(
-                        name: entry.name,
-                        server: entry.server,
-                        disabledTools: manager.tools[entry.name] ?? [],
-                        onToggle: { manager.toggleServer(name: entry.name) },
-                        onToggleTool: { tool in manager.toggleTool(serverName: entry.name, tool: tool) },
-                        onAddTool: { tool in manager.addDisabledTool(serverName: entry.name, tool: tool) }
-                    )
+                // Tab picker
+                Picker("", selection: $selectedTab) {
+                    Text("MCP").tag(0)
+                    Text("Settings").tag(1)
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                
+                Divider()
+                
+                if selectedTab == 0 {
+                    MCPServersView(manager: manager)
+                } else {
+                    SettingsSection(manager: settingsManager)
+                        .padding(.top, 4)
                 }
             }
 
             Divider().padding(.vertical, 4)
 
             HStack {
-                Button("Edit Config…") {
-                    manager.openInEditor()
+                if selectedTab == 0 {
+                    Button("Edit Config…") {
+                        manager.openInEditor()
+                    }
+                } else {
+                    Button("Edit Settings…") {
+                        settingsManager.openInEditor()
+                    }
+                    Button("Docs") {
+                        NSWorkspace.shared.open(URL(string: "https://kiro.dev/docs/cli/reference/settings/")!)
+                    }
                 }
                 Spacer()
                 Button("Quit") {
@@ -54,7 +63,39 @@ struct MenuContentView: View {
         }
         .frame(width: 280)
         .onAppear {
-            if manager.hasBookmark { manager.loadConfig() }
+            if manager.hasBookmark {
+                manager.loadConfig()
+                settingsManager.loadSettings()
+            }
+        }
+    }
+}
+
+private struct MCPServersView: View {
+    @Bindable var manager: MCPConfigManager
+    
+    var body: some View {
+        if let error = manager.errorMessage {
+            Text(error)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(12)
+        } else if manager.servers.isEmpty {
+            Text("No MCP servers configured")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(12)
+        } else {
+            ForEach(manager.servers, id: \.name) { entry in
+                ServerRow(
+                    name: entry.name,
+                    server: entry.server,
+                    disabledTools: manager.tools[entry.name] ?? [],
+                    onToggle: { manager.toggleServer(name: entry.name) },
+                    onToggleTool: { tool in manager.toggleTool(serverName: entry.name, tool: tool) },
+                    onAddTool: { tool in manager.addDisabledTool(serverName: entry.name, tool: tool) }
+                )
+            }
         }
     }
 }
