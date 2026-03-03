@@ -4,8 +4,10 @@ title: Create GitHub Release with downloadable artifact
 status: To Do
 assignee: []
 created_date: '2026-03-03 21:33'
+updated_date: '2026-03-03 21:33'
 labels: []
-dependencies: []
+dependencies:
+  - KIRO-004.04
 parent_task_id: KIRO-004
 ---
 
