@@ -1,10 +1,10 @@
 ---
 id: KIRO-004.01
 title: Configure Xcode project versioning from git tags
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-03-03 21:33'
-updated_date: '2026-03-03 21:34'
+updated_date: '2026-03-03 21:35'
 labels: []
 dependencies: []
 parent_task_id: KIRO-004
@@ -23,5 +23,5 @@ CURRENT_PROJECT_VERSION should be a build number (can use commit count or CI run
 <!-- AC:BEGIN -->
 - [ ] #1 Xcode project builds successfully with version derived from git tag
 - [ ] #2 App bundle shows correct version in Finder Get Info
-- [ ] #3 Build script or CI step extracts version from tag and injects into build
+- [x] #3 Build script or CI step extracts version from tag and injects into build
 <!-- AC:END -->
