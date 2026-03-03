@@ -1,9 +1,10 @@
 ---
 id: KIRO-003
 title: Create update-settings-ui skill to sync settings with Kiro CLI
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2026-03-03 10:04'
+updated_date: '2026-03-03 10:06'
 labels:
   - feature
   - skill
