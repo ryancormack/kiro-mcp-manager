@@ -1,9 +1,10 @@
 ---
 id: KIRO-004.02
 title: Create GitHub Actions workflow for building macOS app
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2026-03-03 21:33'
+updated_date: '2026-03-03 21:34'
 labels: []
 dependencies: []
 documentation:
