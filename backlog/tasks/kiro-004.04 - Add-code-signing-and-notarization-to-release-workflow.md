@@ -1,10 +1,10 @@
 ---
 id: KIRO-004.04
 title: Add code signing and notarization to release workflow
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-03-03 21:33'
-updated_date: '2026-03-03 21:34'
+updated_date: '2026-03-03 21:35'
 labels: []
 dependencies:
   - KIRO-004.02
@@ -34,10 +34,10 @@ The workflow should:
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Workflow imports signing certificate from GitHub secrets
-- [ ] #2 App is signed with Developer ID Application certificate
-- [ ] #3 App is submitted to Apple notarization service
-- [ ] #4 Notarization ticket is stapled to the app
-- [ ] #5 Temporary keychain is cleaned up after build
-- [ ] #6 README documents required GitHub secrets setup
+- [x] #1 Workflow imports signing certificate from GitHub secrets
+- [x] #2 App is signed with Developer ID Application certificate
+- [x] #3 App is submitted to Apple notarization service
+- [x] #4 Notarization ticket is stapled to the app
+- [x] #5 Temporary keychain is cleaned up after build
+- [x] #6 README documents required GitHub secrets setup
 <!-- AC:END -->
