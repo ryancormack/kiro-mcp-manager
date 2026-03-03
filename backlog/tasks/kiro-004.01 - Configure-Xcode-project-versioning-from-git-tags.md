@@ -1,9 +1,10 @@
 ---
 id: KIRO-004.01
 title: Configure Xcode project versioning from git tags
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2026-03-03 21:33'
+updated_date: '2026-03-03 21:34'
 labels: []
 dependencies: []
 parent_task_id: KIRO-004
