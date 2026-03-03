@@ -53,7 +53,7 @@ jobs:
           cp -R "$APP_PATH" artifacts/
 
       - name: Import signing certificate
-        if: ${{ secrets.APPLE_CERTIFICATE_BASE64 != '' }}
+        if: ${{ env.APPLE_CERTIFICATE_BASE64 != '' }}
         env:
           APPLE_CERTIFICATE_BASE64: ${{ secrets.APPLE_CERTIFICATE_BASE64 }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
@@ -76,8 +76,9 @@ jobs:
           security list-keychain -d user -s $KEYCHAIN_PATH
 
       - name: Sign app
-        if: ${{ secrets.APPLE_CERTIFICATE_BASE64 != '' }}
+        if: ${{ env.APPLE_CERTIFICATE_BASE64 != '' }}
         env:
+          APPLE_CERTIFICATE_BASE64: ${{ secrets.APPLE_CERTIFICATE_BASE64 }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
           APP_PATH="artifacts/$APP_NAME.app"
@@ -87,8 +88,9 @@ jobs:
             "$APP_PATH"
 
       - name: Notarize app
-        if: ${{ secrets.APPLE_CERTIFICATE_BASE64 != '' }}
+        if: ${{ env.APPLE_CERTIFICATE_BASE64 != '' }}
         env:
+          APPLE_CERTIFICATE_BASE64: ${{ secrets.APPLE_CERTIFICATE_BASE64 }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
           APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
