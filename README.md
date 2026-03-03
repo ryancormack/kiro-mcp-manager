@@ -40,6 +40,19 @@ kiro-cli chat --resume
 
 ## Installation
 
+### Homebrew (recommended)
+
+```bash
+brew tap ryancormack/kiro-mcp-manager
+brew install --cask kiro-mcp-manager
+```
+
+### Manual download
+
+Download the latest `.zip` from [Releases](https://github.com/ryancormack/kiro-mcp-manager/releases), extract it, and drag `KiroMcpManager.app` to your Applications folder.
+
+### Build from source
+
 1. Clone this repo
 2. Open `KiroMcpManager/KiroMcpManager.xcodeproj` in Xcode
 3. Build and run (`Cmd+R`)
