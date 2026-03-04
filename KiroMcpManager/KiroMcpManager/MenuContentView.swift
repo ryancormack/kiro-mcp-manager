@@ -10,7 +10,7 @@ struct MenuContentView: View {
         VStack(alignment: .leading, spacing: 0) {
             if !manager.hasBookmark {
                 Text("Grant access to your MCP config file")
-                    .font(.caption)
+                    .font(.callout)
                     .foregroundStyle(.secondary)
                     .padding(12)
                 Button("Select mcp.json…") {
@@ -26,7 +26,7 @@ struct MenuContentView: View {
                 }
                 .pickerStyle(.segmented)
                 .padding(.horizontal, 12)
-                .padding(.vertical, 8)
+                .padding(.vertical, 10)
                 
                 Divider()
                 
@@ -61,7 +61,7 @@ struct MenuContentView: View {
             .padding(.horizontal, 12)
             .padding(.bottom, 8)
         }
-        .frame(width: 280)
+        .frame(width: 320)
         .onAppear {
             if manager.hasBookmark {
                 manager.loadConfig()
@@ -77,12 +77,12 @@ private struct MCPServersView: View {
     var body: some View {
         if let error = manager.errorMessage {
             Text(error)
-                .font(.caption)
+                .font(.callout)
                 .foregroundStyle(.secondary)
                 .padding(12)
         } else if manager.servers.isEmpty {
             Text("No MCP servers configured")
-                .font(.caption)
+                .font(.callout)
                 .foregroundStyle(.secondary)
                 .padding(12)
         } else {
@@ -115,19 +115,22 @@ private struct ServerRow: View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
                 Button(action: { isExpanded.toggle() }) {
-                    Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
-                        .font(.caption)
-                        .frame(width: 12)
+                    HStack {
+                        Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
+                            .font(.callout)
+                            .frame(width: 16)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(name).fontWeight(.medium)
+                            Text(server.serverType)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                    }
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(name).fontWeight(.medium)
-                    Text(server.serverType)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                Spacer()
+                
                 Toggle("", isOn: Binding(
                     get: { !server.isDisabled },
                     set: { _ in onToggle() }
@@ -136,13 +139,13 @@ private struct ServerRow: View {
                 .labelsHidden()
             }
             .padding(.horizontal, 12)
-            .padding(.vertical, 6)
+            .padding(.vertical, 10)
 
             if isExpanded {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 6) {
                     if disabledTools.isEmpty {
                         Text("No tools disabled")
-                            .font(.caption)
+                            .font(.callout)
                             .foregroundStyle(.secondary)
                             .padding(.vertical, 4)
                     } else {
@@ -151,22 +154,21 @@ private struct ServerRow: View {
                         }
                     }
 
-                    HStack(spacing: 4) {
+                    HStack(spacing: 8) {
                         TextField("Tool name to disable", text: $newToolName)
                             .textFieldStyle(.roundedBorder)
-                            .font(.caption)
+                            .font(.callout)
                         Button("Add") {
                             onAddTool(newToolName)
                             newToolName = ""
                         }
                         .disabled(newToolName.trimmingCharacters(in: .whitespaces).isEmpty)
-                        .font(.caption)
                     }
                     .padding(.top, 4)
                 }
                 .padding(.horizontal, 12)
-                .padding(.leading, 12)
-                .padding(.bottom, 8)
+                .padding(.leading, 16)
+                .padding(.bottom, 10)
             }
         }
     }
@@ -180,17 +182,16 @@ private struct ToolRow: View {
         HStack {
             Image(systemName: "xmark.circle.fill")
                 .foregroundStyle(.red.opacity(0.7))
-                .font(.caption)
+                .font(.callout)
             Text(tool)
-                .font(.caption)
+                .font(.callout)
                 .foregroundStyle(.secondary)
             Spacer()
             Button("Enable") {
                 onRemove()
             }
-            .font(.caption)
             .buttonStyle(.borderless)
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, 4)
     }
 }
