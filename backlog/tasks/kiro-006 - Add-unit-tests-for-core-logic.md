@@ -4,7 +4,7 @@ title: Add unit tests for core logic
 status: In Progress
 assignee: []
 created_date: '2026-03-04 21:54'
-updated_date: '2026-03-04 21:55'
+updated_date: '2026-03-04 21:56'
 labels: []
 dependencies: []
 priority: medium
@@ -31,3 +31,13 @@ Core logic to test:
 - [ ] #5 Tests for environment variable expansion in MCPConfigManager
 - [ ] #6 Tests pass in CI (GitHub Actions)
 <!-- AC:END -->
+
+## Implementation Plan
+
+<!-- SECTION:PLAN:BEGIN -->
+1. Create KiroMcpManagerTests directory with test file
+2. Update project.pbxproj to add test target
+3. Make expandEnvVar internal for testability
+4. Write tests for AnyCodableValue, McpServer, McpConfig, and env var expansion
+5. Update GitHub Actions to run tests
+<!-- SECTION:PLAN:END -->
