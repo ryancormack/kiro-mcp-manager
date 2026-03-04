@@ -178,7 +178,7 @@ final class MCPConfigManager {
         return result
     }
 
-    private func expandEnvVar(_ value: String) -> String {
+    func expandEnvVar(_ value: String) -> String {
         let pattern = #"\$\{([^}]+)\}"#
         guard let regex = try? NSRegularExpression(pattern: pattern) else { return value }
         var result = value

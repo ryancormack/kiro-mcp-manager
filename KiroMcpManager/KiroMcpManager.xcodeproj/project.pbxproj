@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		E48C20612F562E00001B56FD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E48C20452F562D4C001B56FD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E48C204C2F562D4C001B56FD;
+			remoteInfo = KiroMcpManager;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		E48C204D2F562D4C001B56FD /* KiroMcpManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KiroMcpManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E48C205F2F562E00001B56FD /* KiroMcpManagerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KiroMcpManagerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,10 +27,22 @@
 			path = KiroMcpManager;
 			sourceTree = "<group>";
 		};
+		E48C20602F562E00001B56FD /* KiroMcpManagerTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = KiroMcpManagerTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		E48C204A2F562D4C001B56FD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E48C205C2F562E00001B56FD /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				E48C204F2F562D4C001B56FD /* KiroMcpManager */,
+				E48C20602F562E00001B56FD /* KiroMcpManagerTests */,
 				E48C204E2F562D4C001B56FD /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				E48C204D2F562D4C001B56FD /* KiroMcpManager.app */,
+				E48C205F2F562E00001B56FD /* KiroMcpManagerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,6 +95,29 @@
 			productReference = E48C204D2F562D4C001B56FD /* KiroMcpManager.app */;
 			productType = "com.apple.product-type.application";
 		};
+		E48C205E2F562E00001B56FD /* KiroMcpManagerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E48C20652F562E00001B56FD /* Build configuration list for PBXNativeTarget "KiroMcpManagerTests" */;
+			buildPhases = (
+				E48C205B2F562E00001B56FD /* Sources */,
+				E48C205C2F562E00001B56FD /* Frameworks */,
+				E48C205D2F562E00001B56FD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E48C20622F562E00001B56FD /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				E48C20602F562E00001B56FD /* KiroMcpManagerTests */,
+			);
+			name = KiroMcpManagerTests;
+			packageProductDependencies = (
+			);
+			productName = KiroMcpManagerTests;
+			productReference = E48C205F2F562E00001B56FD /* KiroMcpManagerTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -82,6 +130,10 @@
 				TargetAttributes = {
 					E48C204C2F562D4C001B56FD = {
 						CreatedOnToolsVersion = 26.1.1;
+					};
+					E48C205E2F562E00001B56FD = {
+						CreatedOnToolsVersion = 26.1.1;
+						TestTargetID = E48C204C2F562D4C001B56FD;
 					};
 				};
 			};
@@ -100,12 +152,20 @@
 			projectRoot = "";
 			targets = (
 				E48C204C2F562D4C001B56FD /* KiroMcpManager */,
+				E48C205E2F562E00001B56FD /* KiroMcpManagerTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E48C204B2F562D4C001B56FD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E48C205D2F562E00001B56FD /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +182,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E48C205B2F562E00001B56FD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E48C20622F562E00001B56FD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E48C204C2F562D4C001B56FD /* KiroMcpManager */;
+			targetProxy = E48C20612F562E00001B56FD /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		E48C20562F562D4E001B56FD /* Debug */ = {
@@ -305,6 +380,44 @@
 			};
 			name = Release;
 		};
+		E48C20632F562E00001B56FD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ryancormack.KiroMcpManagerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KiroMcpManager.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KiroMcpManager";
+			};
+			name = Debug;
+		};
+		E48C20642F562E00001B56FD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ryancormack.KiroMcpManagerTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KiroMcpManager.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/KiroMcpManager";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -322,6 +435,15 @@
 			buildConfigurations = (
 				E48C20592F562D4E001B56FD /* Debug */,
 				E48C205A2F562D4E001B56FD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E48C20652F562E00001B56FD /* Build configuration list for PBXNativeTarget "KiroMcpManagerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E48C20632F562E00001B56FD /* Debug */,
+				E48C20642F562E00001B56FD /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
