@@ -1,9 +1,10 @@
 ---
 id: KIRO-006
 title: Add unit tests for core logic
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2026-03-04 21:54'
+updated_date: '2026-03-04 21:55'
 labels: []
 dependencies: []
 priority: medium
