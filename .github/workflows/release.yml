@@ -121,16 +121,26 @@ jobs:
       #       security delete-keychain $KEYCHAIN_PATH || true
       #     fi
 
-      - name: Create release zip
+      - name: Create DMG
         run: |
-          cd artifacts
-          zip -r "../$APP_NAME-${{ steps.version.outputs.version }}.zip" "$APP_NAME.app"
-          cd ..
-          shasum -a 256 "$APP_NAME-${{ steps.version.outputs.version }}.zip" > "$APP_NAME-${{ steps.version.outputs.version }}.zip.sha256"
+          DMG_NAME="${APP_NAME}-${{ steps.version.outputs.version }}.dmg"
+          
+          # Create a temporary directory for DMG contents
+          mkdir -p dmg_contents
+          cp -R "artifacts/$APP_NAME.app" dmg_contents/
+          ln -s /Applications dmg_contents/Applications
+          
+          # Create DMG
+          hdiutil create -volname "$APP_NAME" \
+            -srcfolder dmg_contents \
+            -ov -format UDZO \
+            "$DMG_NAME"
+          
+          shasum -a 256 "$DMG_NAME" > "$DMG_NAME.sha256"
 
       - name: Upload to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            ${{ env.APP_NAME }}-${{ steps.version.outputs.version }}.zip
-            ${{ env.APP_NAME }}-${{ steps.version.outputs.version }}.zip.sha256
+            ${{ env.APP_NAME }}-${{ steps.version.outputs.version }}.dmg
+            ${{ env.APP_NAME }}-${{ steps.version.outputs.version }}.dmg.sha256
