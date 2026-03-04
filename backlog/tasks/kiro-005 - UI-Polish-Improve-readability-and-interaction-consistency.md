@@ -1,10 +1,10 @@
 ---
 id: KIRO-005
 title: UI Polish - Improve readability and interaction consistency
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2026-03-04 21:16'
-updated_date: '2026-03-04 21:16'
+updated_date: '2026-03-04 21:39'
 labels:
   - ui
   - polish
