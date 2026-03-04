@@ -1,10 +1,10 @@
 ---
 id: KIRO-005
 title: UI Polish - Improve readability and interaction consistency
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-03-04 21:16'
-updated_date: '2026-03-04 21:39'
+updated_date: '2026-03-04 21:40'
 labels:
   - ui
   - polish
@@ -21,12 +21,12 @@ The current UI has several usability issues that make it feel clunky and hard to
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 MCP server rows are fully clickable to expand (not just the small chevron)
-- [ ] #2 Settings and MCP tabs have consistent interaction patterns
-- [ ] #3 Text is readable without straining (larger fonts, better contrast)
-- [ ] #4 Text input fields have adequate width for content
-- [ ] #5 Touch targets meet minimum size guidelines (~44pt)
-- [ ] #6 Visual hierarchy is clear between categories, items, and controls
+- [x] #1 MCP server rows are fully clickable to expand (not just the small chevron)
+- [x] #2 Settings and MCP tabs have consistent interaction patterns
+- [x] #3 Text is readable without straining (larger fonts, better contrast)
+- [x] #4 Text input fields have adequate width for content
+- [x] #5 Touch targets meet minimum size guidelines (~44pt)
+- [x] #6 Visual hierarchy is clear between categories, items, and controls
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -73,3 +73,25 @@ The current UI has several usability issues that make it feel clunky and hard to
 - `MenuContentView.swift` - ServerRow, ToolRow, MCPServersView
 - `SettingsView.swift` - SettingRow, StringSettingControl, NumberSettingControl
 <!-- SECTION:PLAN:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+## Changes Made
+
+### MenuContentView.swift
+- **Full-row clickable MCP servers**: Wrapped server name/type in a Button with `.contentShape(Rectangle())` so the entire row expands on click, not just the chevron
+- **Larger fonts**: Changed `.font(.caption)` to `.font(.callout)` for readable text
+- **Wider frame**: 280pt → 320pt to accommodate larger content
+- **Better spacing**: Row padding 6pt → 10pt, spacing between elements increased
+- **Larger chevron**: 12pt → 16pt frame width
+
+### SettingsView.swift
+- **Consistent styling**: Matched MCP tab's interaction pattern and spacing
+- **Larger fonts**: `.font(.caption)` → `.font(.callout)` for labels
+- **Wider text inputs**: String fields 100pt → 140pt, number fields 60pt → 80pt
+- **Better contrast**: Removed `.foregroundStyle(.secondary)` from setting labels
+- **Improved spacing**: Row padding and vertical spacing increased
+
+Build verified successful.
+<!-- SECTION:FINAL_SUMMARY:END -->
