@@ -39,8 +39,8 @@ private struct CategoryRow: View {
             Button(action: onToggle) {
                 HStack {
                     Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
-                        .font(.caption)
-                        .frame(width: 12)
+                        .font(.callout)
+                        .frame(width: 16)
                     Text(category)
                         .fontWeight(.medium)
                     Spacer()
@@ -49,17 +49,17 @@ private struct CategoryRow: View {
             }
             .buttonStyle(.plain)
             .padding(.horizontal, 12)
-            .padding(.vertical, 6)
+            .padding(.vertical, 10)
             
             if isExpanded {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: 6) {
                     ForEach(settings, id: \.key) { setting in
                         SettingRow(setting: setting, manager: manager)
                     }
                 }
                 .padding(.horizontal, 12)
-                .padding(.leading, 12)
-                .padding(.bottom, 8)
+                .padding(.leading, 16)
+                .padding(.bottom, 10)
             }
         }
     }
@@ -72,8 +72,7 @@ private struct SettingRow: View {
     var body: some View {
         HStack {
             Text(setting.label)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.callout)
                 .help(setting.hint)
             Spacer()
             
@@ -86,7 +85,7 @@ private struct SettingRow: View {
                 NumberSettingControl(key: setting.key, manager: manager)
             }
         }
-        .padding(.vertical, 2)
+        .padding(.vertical, 4)
     }
 }
 
@@ -101,7 +100,6 @@ private struct BoolSettingControl: View {
         ))
         .toggleStyle(.switch)
         .labelsHidden()
-        .controlSize(.mini)
     }
 }
 
@@ -114,8 +112,8 @@ private struct StringSettingControl: View {
     var body: some View {
         TextField("", text: $text)
             .textFieldStyle(.roundedBorder)
-            .font(.caption)
-            .frame(width: 100)
+            .font(.callout)
+            .frame(width: 140)
             .focused($isFocused)
             .onAppear { text = manager.getString(for: key) ?? "" }
             .onChange(of: isFocused) { _, focused in
@@ -140,8 +138,8 @@ private struct NumberSettingControl: View {
     var body: some View {
         TextField("", text: $text)
             .textFieldStyle(.roundedBorder)
-            .font(.caption)
-            .frame(width: 60)
+            .font(.callout)
+            .frame(width: 80)
             .focused($isFocused)
             .onAppear {
                 if let num = manager.getNumber(for: key) {
