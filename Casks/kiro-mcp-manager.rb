@@ -7,7 +7,7 @@ cask "kiro-mcp-manager" do
   desc "Menu bar app for managing Kiro CLI MCP server configuration"
   homepage "https://github.com/ryancormack/kiro-mcp-manager"
 
-  depends_on macos: ">= :tahoe"
+  depends_on macos: ">= :sonoma"
 
   app "KiroMcpManager.app"
 end
