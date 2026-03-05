@@ -17,7 +17,7 @@ This document describes how to cut a new release of Kiro MCP Manager.
 
 ### One-time setup (GitHub Secrets)
 
-Add these secrets to your GitHub repository (Settings → Secrets and variables → Actions):
+Add these secrets to your GitHub repository (Settings -> Secrets and variables -> Actions):
 
 | Secret | Description |
 |--------|-------------|
@@ -30,8 +30,18 @@ Add these secrets to your GitHub repository (Settings → Secrets and variables 
 
 To create an app-specific password:
 1. Go to [appleid.apple.com](https://appleid.apple.com)
-2. Sign in → Security → App-Specific Passwords
+2. Sign in -> Security -> App-Specific Passwords
 3. Generate a new password for "GitHub Actions"
+
+### One-time setup (Homebrew Tap)
+
+The release workflow automatically updates the Homebrew Cask formula after each release. This requires:
+
+1. **Create the tap repository**: Create a public GitHub repository named `ryancormack/homebrew-kiro-mcp-manager`. It can start empty; the workflow will push the `Casks/` directory automatically.
+
+2. **Create a Personal Access Token**: Generate a GitHub PAT with `repo` scope that has push access to the `ryancormack/homebrew-kiro-mcp-manager` repository.
+
+3. **Add the `HOMEBREW_TAP_TOKEN` secret**: Go to your repository Settings -> Secrets and variables -> Actions, and add the PAT as a secret named `HOMEBREW_TAP_TOKEN`.
 
 ## Cutting a Release
 
@@ -53,26 +63,18 @@ To create an app-specific password:
    - Build the app
    - Sign it with your Developer ID certificate
    - Submit for Apple notarization
-   - Create a GitHub Release with the signed .zip
+   - Create a GitHub Release with the signed DMG
+   - Update the Homebrew Cask formula in the tap repository
 
-5. Once the release is published, update the Homebrew formula (see below)
+## Homebrew Formula (Automated)
 
-## Updating Homebrew Formula
+After the build job completes, the release workflow automatically:
 
-After a release is published:
+1. Downloads the SHA256 checksum file from the GitHub Release
+2. Generates an updated Homebrew Cask formula with the correct version and SHA256
+3. Commits and pushes the formula to the `ryancormack/homebrew-kiro-mcp-manager` tap repository
 
-1. Get the SHA256 from the release assets (`.sha256` file)
-
-2. Update the formula in your tap repository:
-   ```ruby
-   cask "kiro-mcp-manager" do
-     version "1.0.0"
-     sha256 "abc123..."  # From the .sha256 file
-     # ...
-   end
-   ```
-
-3. Commit and push the formula update
+No manual intervention is needed. If the `HOMEBREW_TAP_TOKEN` secret is not configured or the tap repository does not exist, the `update-homebrew` job will fail without affecting the release itself.
 
 ## Troubleshooting
 
