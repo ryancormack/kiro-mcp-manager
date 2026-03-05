@@ -4,7 +4,7 @@ A lightweight macOS menu bar app for managing your [Kiro CLI](https://kiro.dev/d
 
 No more editing JSON by hand or trying to remember which servers are enabled. Just click the **K** in your menu bar.
 
-![macOS](https://img.shields.io/badge/macOS-26.1+-blue)
+![macOS](https://img.shields.io/badge/macOS-14.0+-blue)
 ![Swift](https://img.shields.io/badge/Swift-5-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -116,8 +116,8 @@ To re-enable a tool, expand the server and click **Enable** next to the tool nam
 
 ## Requirements
 
-- macOS 26.1+
-- Xcode 26.1+
+- macOS 14.0+
+- Xcode 26.0+ (for building from source)
 
 ## License
 
