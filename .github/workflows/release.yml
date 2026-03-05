@@ -151,3 +151,68 @@ jobs:
           files: |
             ${{ env.APP_NAME }}-${{ steps.version.outputs.version }}.dmg
             ${{ env.APP_NAME }}-${{ steps.version.outputs.version }}.dmg.sha256
+
+  update-homebrew:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Updating Homebrew formula for version $VERSION"
+
+      - name: Download SHA256 file from release
+        env:
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          gh release download "$GITHUB_REF_NAME" \
+            --repo ryancormack/kiro-mcp-manager \
+            --pattern '*.sha256' \
+            --dir ./
+
+      - name: Extract SHA256 hash
+        id: sha256
+        run: |
+          SHA256=$(awk '{print $1}' KiroMcpManager-${{ steps.version.outputs.version }}.dmg.sha256)
+          echo "sha256=$SHA256" >> $GITHUB_OUTPUT
+          echo "SHA256: $SHA256"
+
+      - name: Checkout tap repository
+        uses: actions/checkout@v6
+        with:
+          repository: ryancormack/homebrew-kiro-mcp-manager
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          path: homebrew-tap
+
+      - name: Update Cask formula
+        run: |
+          mkdir -p homebrew-tap/Casks
+          cat > homebrew-tap/Casks/kiro-mcp-manager.rb <<'FORMULA'
+          cask "kiro-mcp-manager" do
+            version "${{ steps.version.outputs.version }}"
+            sha256 "${{ steps.sha256.outputs.sha256 }}"
+
+            url "https://github.com/ryancormack/kiro-mcp-manager/releases/download/v#{version}/KiroMcpManager-#{version}.dmg"
+            name "Kiro MCP Manager"
+            desc "Menu bar app for managing Kiro CLI MCP server configuration"
+            homepage "https://github.com/ryancormack/kiro-mcp-manager"
+
+            depends_on macos: ">= :tahoe"
+
+            app "KiroMcpManager.app"
+          end
+          FORMULA
+
+      - name: Commit and push formula
+        working-directory: homebrew-tap
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Casks/kiro-mcp-manager.rb
+          git commit -m "Update kiro-mcp-manager to ${{ steps.version.outputs.version }}"
+          git push
