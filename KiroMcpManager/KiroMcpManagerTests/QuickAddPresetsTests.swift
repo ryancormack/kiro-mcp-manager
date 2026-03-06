@@ -14,6 +14,16 @@ import Testing
         #expect(keys.contains("gatewayURL"))
         #expect(keys.contains("awsProfile"))
         #expect(keys.contains("awsRegion"))
+
+        let awsProfileField = preset.requiredFields.first { $0.key == "awsProfile" }
+        let awsRegionField = preset.requiredFields.first { $0.key == "awsRegion" }
+        #expect(awsProfileField?.isOptional == true)
+        #expect(awsRegionField?.isOptional == true)
+
+        let serverNameField = preset.requiredFields.first { $0.key == "serverName" }
+        let gatewayURLField = preset.requiredFields.first { $0.key == "gatewayURL" }
+        #expect(serverNameField?.isOptional == false)
+        #expect(gatewayURLField?.isOptional == false)
     }
 
     @Test func bedrockPresetProducesCorrectServer() {
@@ -46,7 +56,7 @@ import Testing
         }
     }
 
-    @Test func bedrockPresetUsesDefaultValues() {
+    @Test func bedrockPresetOmitsEnvWhenNoAwsFieldsProvided() {
         let preset = quickAddPresets[0]
         let inputs: [String: String] = [
             "serverName": "test",
@@ -54,11 +64,44 @@ import Testing
         ]
         let server = preset.buildServer(inputs)
 
+        #expect(server.fields["env"] == nil)
+        #expect(server.fields["command"] == .string("uvx"))
+        #expect(server.fields["type"] == .string("stdio"))
+    }
+
+    @Test func bedrockPresetIncludesOnlyProfileWhenRegionEmpty() {
+        let preset = quickAddPresets[0]
+        let inputs: [String: String] = [
+            "serverName": "test",
+            "gatewayURL": "https://example.com",
+            "awsProfile": "staging",
+            "awsRegion": ""
+        ]
+        let server = preset.buildServer(inputs)
+
         if case .object(let env) = server.fields["env"] {
-            #expect(env["AWS_PROFILE"] == .string("default"))
-            #expect(env["AWS_REGION"] == .string("eu-west-1"))
+            #expect(env["AWS_PROFILE"] == .string("staging"))
+            #expect(env["AWS_REGION"] == nil)
         } else {
-            #expect(Bool(false), "Expected env to be an object")
+            #expect(Bool(false), "Expected env to be an object with only AWS_PROFILE")
+        }
+    }
+
+    @Test func bedrockPresetIncludesOnlyRegionWhenProfileEmpty() {
+        let preset = quickAddPresets[0]
+        let inputs: [String: String] = [
+            "serverName": "test",
+            "gatewayURL": "https://example.com",
+            "awsProfile": "",
+            "awsRegion": "ap-southeast-1"
+        ]
+        let server = preset.buildServer(inputs)
+
+        if case .object(let env) = server.fields["env"] {
+            #expect(env["AWS_PROFILE"] == nil)
+            #expect(env["AWS_REGION"] == .string("ap-southeast-1"))
+        } else {
+            #expect(Bool(false), "Expected env to be an object with only AWS_REGION")
         }
     }
 

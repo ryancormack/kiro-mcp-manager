@@ -141,7 +141,7 @@ struct AddServerView: View {
                 Divider()
                 ForEach(preset.requiredFields) { field in
                     LabeledTextField(
-                        label: field.label,
+                        label: field.isOptional ? "\(field.label) (optional)" : field.label,
                         text: presetInputBinding(for: field.key),
                         placeholder: field.placeholder
                     )
@@ -246,6 +246,7 @@ struct AddServerView: View {
         }
 
         for field in preset.requiredFields {
+            if field.isOptional { continue }
             let value = (presetInputs[field.key] ?? "").trimmingCharacters(in: .whitespaces)
             if value.isEmpty {
                 validationError = "\(field.label) is required."

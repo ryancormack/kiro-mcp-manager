@@ -14,6 +14,15 @@ struct PresetField: Identifiable, Sendable {
     let label: String
     let placeholder: String
     let defaultValue: String
+    let isOptional: Bool
+
+    init(key: String, label: String, placeholder: String, defaultValue: String, isOptional: Bool = false) {
+        self.key = key
+        self.label = label
+        self.placeholder = placeholder
+        self.defaultValue = defaultValue
+        self.isOptional = isOptional
+    }
 }
 
 let quickAddPresets: [QuickAddPreset] = [
@@ -23,23 +32,34 @@ let quickAddPresets: [QuickAddPreset] = [
         requiredFields: [
             PresetField(key: "serverName", label: "Server Name", placeholder: "my-agent-gateway", defaultValue: ""),
             PresetField(key: "gatewayURL", label: "Gateway URL", placeholder: "https://your-agentcore-gateway-url", defaultValue: ""),
-            PresetField(key: "awsProfile", label: "AWS Profile", placeholder: "default", defaultValue: "default"),
-            PresetField(key: "awsRegion", label: "AWS Region", placeholder: "eu-west-1", defaultValue: "eu-west-1")
+            PresetField(key: "awsProfile", label: "AWS Profile", placeholder: "default", defaultValue: "", isOptional: true),
+            PresetField(key: "awsRegion", label: "AWS Region", placeholder: "eu-west-1", defaultValue: "", isOptional: true)
         ],
         buildServer: { inputs in
-            McpServer(fields: [
+            var fields: [String: AnyCodableValue] = [
                 "command": .string("uvx"),
                 "args": .array([
                     .string("mcp-proxy-for-aws@latest"),
                     .string(inputs["gatewayURL"] ?? "")
                 ]),
                 "disabled": .bool(false),
-                "env": .object([
-                    "AWS_PROFILE": .string(inputs["awsProfile"] ?? "default"),
-                    "AWS_REGION": .string(inputs["awsRegion"] ?? "eu-west-1")
-                ]),
                 "type": .string("stdio")
-            ])
+            ]
+
+            let awsProfile = (inputs["awsProfile"] ?? "").trimmingCharacters(in: .whitespaces)
+            let awsRegion = (inputs["awsRegion"] ?? "").trimmingCharacters(in: .whitespaces)
+            var env: [String: AnyCodableValue] = [:]
+            if !awsProfile.isEmpty {
+                env["AWS_PROFILE"] = .string(awsProfile)
+            }
+            if !awsRegion.isEmpty {
+                env["AWS_REGION"] = .string(awsRegion)
+            }
+            if !env.isEmpty {
+                fields["env"] = .object(env)
+            }
+
+            return McpServer(fields: fields)
         }
     )
 ]
