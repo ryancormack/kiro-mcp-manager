@@ -53,6 +53,10 @@ enum AnyCodableValue: Codable, Sendable, Equatable {
 struct McpServer: Codable, Sendable {
     var fields: [String: AnyCodableValue]
 
+    init(fields: [String: AnyCodableValue]) {
+        self.fields = fields
+    }
+
     init(from decoder: Decoder) throws {
         fields = try [String: AnyCodableValue](from: decoder)
     }
@@ -98,4 +102,8 @@ struct McpServer: Codable, Sendable {
 /// Top-level config: `{ "mcpServers": { ... } }`
 struct McpConfig: Codable, Sendable {
     var mcpServers: [String: McpServer]
+
+    init(mcpServers: [String: McpServer]) {
+        self.mcpServers = mcpServers
+    }
 }

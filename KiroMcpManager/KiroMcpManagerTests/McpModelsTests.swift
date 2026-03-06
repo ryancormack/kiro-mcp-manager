@@ -125,6 +125,55 @@ import Testing
         #expect(server.fields["disabledTools"] == nil)
     }
 
+    @Test func initWithFieldsStdio() {
+        let server = McpServer(fields: [
+            "command": .string("node"),
+            "args": .array([.string("server.js")]),
+            "disabled": .bool(false)
+        ])
+        #expect(server.isLocal == true)
+        #expect(server.isRemote == false)
+        #expect(server.isDisabled == false)
+        #expect(server.serverType == "Local")
+    }
+
+    @Test func initWithFieldsHTTP() {
+        let server = McpServer(fields: [
+            "url": .string("https://example.com/mcp"),
+            "disabled": .bool(false)
+        ])
+        #expect(server.isLocal == false)
+        #expect(server.isRemote == true)
+        #expect(server.serverType == "Remote")
+    }
+
+    @Test func roundTripsProgrammaticServer() throws {
+        let server = McpServer(fields: [
+            "command": .string("uvx"),
+            "args": .array([.string("mcp-proxy@latest")]),
+            "env": .object(["KEY": .string("value")]),
+            "disabled": .bool(false),
+            "type": .string("stdio")
+        ])
+        let encoded = try JSONEncoder().encode(server)
+        let decoded = try JSONDecoder().decode(McpServer.self, from: encoded)
+        #expect(decoded.fields["command"] == .string("uvx"))
+        #expect(decoded.fields["type"] == .string("stdio"))
+        #expect(decoded.fields["disabled"] == .bool(false))
+        #expect(decoded.isLocal == true)
+        if case .array(let args) = decoded.fields["args"] {
+            #expect(args.count == 1)
+            #expect(args[0] == .string("mcp-proxy@latest"))
+        } else {
+            #expect(Bool(false), "Expected args to be an array")
+        }
+        if case .object(let env) = decoded.fields["env"] {
+            #expect(env["KEY"] == .string("value"))
+        } else {
+            #expect(Bool(false), "Expected env to be an object")
+        }
+    }
+
     @Test func preservesUnknownFields() throws {
         let json = #"{"command": "node", "customField": "preserved", "nested": {"a": 1}}"#
         let server = try JSONDecoder().decode(McpServer.self, from: Data(json.utf8))
@@ -164,5 +213,12 @@ import Testing
         let decoded = try JSONDecoder().decode(McpConfig.self, from: encoded)
         #expect(decoded.mcpServers["test"]?.isDisabled == true)
         #expect(decoded.mcpServers["test"]?.disabledTools == ["x"])
+    }
+
+    @Test func initWithMcpServersDict() throws {
+        let server = McpServer(fields: ["command": .string("node")])
+        let config = McpConfig(mcpServers: ["test-server": server])
+        #expect(config.mcpServers.count == 1)
+        #expect(config.mcpServers["test-server"]?.isLocal == true)
     }
 }

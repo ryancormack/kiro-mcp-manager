@@ -5,6 +5,7 @@ struct MenuContentView: View {
     @Bindable var settingsManager: SettingsManager
     
     @State private var selectedTab = 0
+    @State private var showingAddServer = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -42,6 +43,9 @@ struct MenuContentView: View {
 
             HStack {
                 if selectedTab == 0 {
+                    Button("Add Server...") {
+                        showingAddServer = true
+                    }
                     Button("Edit Config…") {
                         manager.openInEditor()
                     }
@@ -62,6 +66,9 @@ struct MenuContentView: View {
             .padding(.bottom, 8)
         }
         .frame(width: 320)
+        .sheet(isPresented: $showingAddServer) {
+            AddServerView(manager: manager)
+        }
         .onAppear {
             if manager.hasBookmark {
                 manager.loadConfig()

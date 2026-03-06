@@ -147,6 +147,28 @@ final class MCPConfigManager {
         loadConfig()
     }
 
+    func addServer(name: String, server: McpServer) {
+        withConfigURL { url in
+            var config: McpConfig
+            if FileManager.default.fileExists(atPath: url.path),
+               let data = try? Data(contentsOf: url) {
+                config = try JSONDecoder().decode(McpConfig.self, from: data)
+            } else {
+                config = McpConfig(mcpServers: [:])
+            }
+            config.mcpServers[name] = server
+
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            try encoder.encode(config).write(to: url)
+        }
+        loadConfig()
+    }
+
+    func serverExists(name: String) -> Bool {
+        servers.contains { $0.name == name }
+    }
+
     func openInEditor() {
         withConfigURL { url in
             NSWorkspace.shared.open(url)
