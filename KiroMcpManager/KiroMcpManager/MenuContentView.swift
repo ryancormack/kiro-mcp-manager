@@ -8,6 +8,22 @@ struct MenuContentView: View {
     @State private var showingAddServer = false
 
     var body: some View {
+        Group {
+            if showingAddServer {
+                AddServerView(manager: manager, onDismiss: { showingAddServer = false })
+            } else {
+                mainContentView
+            }
+        }
+        .onAppear {
+            if manager.hasBookmark {
+                manager.loadConfig()
+                settingsManager.loadSettings()
+            }
+        }
+    }
+
+    private var mainContentView: some View {
         VStack(alignment: .leading, spacing: 0) {
             if !manager.hasBookmark {
                 Text("Grant access to your MCP config file")
@@ -66,15 +82,6 @@ struct MenuContentView: View {
             .padding(.bottom, 8)
         }
         .frame(width: 320)
-        .sheet(isPresented: $showingAddServer) {
-            AddServerView(manager: manager)
-        }
-        .onAppear {
-            if manager.hasBookmark {
-                manager.loadConfig()
-                settingsManager.loadSettings()
-            }
-        }
     }
 }
 
