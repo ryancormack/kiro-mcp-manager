@@ -2,7 +2,7 @@ import SwiftUI
 
 struct AddServerView: View {
     @Bindable var manager: MCPConfigManager
-    @Environment(\.dismiss) private var dismiss
+    var onDismiss: () -> Void
 
     @State private var mode = 0 // 0 = Manual, 1 = Quick Add
     @State private var serverType = 0 // 0 = stdio, 1 = HTTP
@@ -55,7 +55,7 @@ struct AddServerView: View {
             HStack {
                 Spacer()
                 Button("Cancel") {
-                    dismiss()
+                    onDismiss()
                 }
                 .keyboardShortcut(.cancelAction)
                 Button("Add Server") {
@@ -236,7 +236,7 @@ struct AddServerView: View {
             manager.addServer(name: trimmedName, server: McpServer(fields: fields))
         }
 
-        dismiss()
+        onDismiss()
     }
 
     private func addPresetServer() {
@@ -266,7 +266,7 @@ struct AddServerView: View {
 
         let server = preset.buildServer(presetInputs)
         manager.addServer(name: trimmedName, server: server)
-        dismiss()
+        onDismiss()
     }
 
     private func buildDictionary(from pairs: [(key: String, value: String)]) -> [String: String] {
