@@ -47,12 +47,15 @@ struct MenuContentView: View {
                 
                 Divider()
                 
-                if selectedTab == 0 {
-                    MCPServersView(manager: manager)
-                } else {
-                    SettingsSection(manager: settingsManager)
-                        .padding(.top, 4)
+                ScrollView(.vertical, showsIndicators: true) {
+                    if selectedTab == 0 {
+                        MCPServersView(manager: manager)
+                    } else {
+                        SettingsSection(manager: settingsManager)
+                            .padding(.top, 4)
+                    }
                 }
+                .frame(minHeight: 50, maxHeight: 400)
             }
 
             Divider().padding(.vertical, 4)
