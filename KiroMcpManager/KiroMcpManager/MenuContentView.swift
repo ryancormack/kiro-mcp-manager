@@ -15,6 +15,7 @@ struct MenuContentView: View {
                 mainContentView
             }
         }
+        .frame(width: 380)
         .onAppear {
             if manager.hasBookmark {
                 manager.loadConfig()
@@ -84,7 +85,6 @@ struct MenuContentView: View {
             .padding(.horizontal, 12)
             .padding(.bottom, 8)
         }
-        .frame(width: 320)
     }
 }
 

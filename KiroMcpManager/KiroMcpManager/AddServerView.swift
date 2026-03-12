@@ -65,7 +65,6 @@ struct AddServerView: View {
             }
         }
         .padding(16)
-        .frame(width: 380)
     }
 
     // MARK: - Manual Mode
