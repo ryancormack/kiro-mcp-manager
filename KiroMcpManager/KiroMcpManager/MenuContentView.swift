@@ -15,6 +15,7 @@ struct MenuContentView: View {
                 mainContentView
             }
         }
+        .frame(width: 380)
         .onAppear {
             if manager.hasBookmark {
                 manager.loadConfig()
@@ -47,12 +48,15 @@ struct MenuContentView: View {
                 
                 Divider()
                 
-                if selectedTab == 0 {
-                    MCPServersView(manager: manager)
-                } else {
-                    SettingsSection(manager: settingsManager)
-                        .padding(.top, 4)
+                ScrollView(.vertical, showsIndicators: true) {
+                    if selectedTab == 0 {
+                        MCPServersView(manager: manager)
+                    } else {
+                        SettingsSection(manager: settingsManager)
+                            .padding(.top, 4)
+                    }
                 }
+                .frame(minHeight: 50, maxHeight: 400)
             }
 
             Divider().padding(.vertical, 4)
@@ -81,7 +85,6 @@ struct MenuContentView: View {
             .padding(.horizontal, 12)
             .padding(.bottom, 8)
         }
-        .frame(width: 320)
     }
 }
 
