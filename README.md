@@ -20,6 +20,8 @@ This app puts that config in your menu bar so you can:
 - **See whether each server is local or remote**
 - **Toggle servers on and off** with a single click
 - **Disable specific tools** without disabling the whole server
+- **Add new MCP servers** manually or from quick-add presets
+- **Delete MCP servers** you no longer need, with a confirmation prompt
 - **Manage Kiro CLI settings** with toggles and text fields
 - **Open config files** in your default editor when you need to make deeper changes
 
@@ -79,6 +81,8 @@ Click the **K** in your menu bar to open the app. Use the **MCP** and **Settings
 - Each server shows its **name**, **type** (Local or Remote), and an **on/off toggle**
 - Flip a toggle to set `"disabled": true` or `"disabled": false` in the config
 - Click the **chevron** next to a server to expand and manage individual tools
+- Click **Delete Server** in the expanded view to remove a server (you will be asked to confirm)
+- Click **Add Server…** to add a new server manually or from a quick-add preset
 - Click **Edit Config…** to open `mcp.json` in your default editor
 
 ### Settings Tab
@@ -112,6 +116,7 @@ To re-enable a tool, expand the server and click **Enable** next to the tool nam
 - Reads and writes `~/.kiro/settings/cli.json` (the [Kiro CLI settings](https://kiro.dev/docs/cli/reference/settings/))
 - A server is **Local** if it has a `command` field, **Remote** if it has a `url` field
 - Toggling a server sets the `disabled` field to `true` or `false` — all other config is preserved
+- Deleting a server removes its entry from `mcpServers` — this cannot be undone from the app
 - Uses macOS security-scoped bookmarks so the sandboxed app only has access to the folder you granted
 
 ## Requirements

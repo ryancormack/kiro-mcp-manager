@@ -110,7 +110,8 @@ private struct MCPServersView: View {
                     disabledTools: manager.tools[entry.name] ?? [],
                     onToggle: { manager.toggleServer(name: entry.name) },
                     onToggleTool: { tool in manager.toggleTool(serverName: entry.name, tool: tool) },
-                    onAddTool: { tool in manager.addDisabledTool(serverName: entry.name, tool: tool) }
+                    onAddTool: { tool in manager.addDisabledTool(serverName: entry.name, tool: tool) },
+                    onDelete: { manager.deleteServer(name: entry.name) }
                 )
             }
         }
@@ -124,9 +125,11 @@ private struct ServerRow: View {
     let onToggle: () -> Void
     let onToggleTool: (String) -> Void
     let onAddTool: (String) -> Void
+    let onDelete: () -> Void
 
     @State private var isExpanded = false
     @State private var newToolName = ""
+    @State private var showDeleteConfirmation = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -182,11 +185,32 @@ private struct ServerRow: View {
                         .disabled(newToolName.trimmingCharacters(in: .whitespaces).isEmpty)
                     }
                     .padding(.top, 4)
+
+                    Divider()
+                        .padding(.vertical, 4)
+
+                    Button(role: .destructive) {
+                        showDeleteConfirmation = true
+                    } label: {
+                        HStack {
+                            Image(systemName: "trash")
+                            Text("Delete Server")
+                        }
+                    }
+                    .buttonStyle(.borderless)
                 }
                 .padding(.horizontal, 12)
                 .padding(.leading, 16)
                 .padding(.bottom, 10)
             }
+        }
+        .alert("Delete \"\(name)\"?", isPresented: $showDeleteConfirmation) {
+            Button("Cancel", role: .cancel) { }
+            Button("Delete", role: .destructive) {
+                onDelete()
+            }
+        } message: {
+            Text("This will permanently remove the server from your configuration. This cannot be undone.")
         }
     }
 }
