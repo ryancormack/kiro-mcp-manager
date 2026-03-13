@@ -165,6 +165,19 @@ final class MCPConfigManager {
         loadConfig()
     }
 
+    func deleteServer(name: String) {
+        withConfigURL { url in
+            let data = try Data(contentsOf: url)
+            var config = try JSONDecoder().decode(McpConfig.self, from: data)
+            config.mcpServers.removeValue(forKey: name)
+
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+            try encoder.encode(config).write(to: url)
+        }
+        loadConfig()
+    }
+
     func serverExists(name: String) -> Bool {
         servers.contains { $0.name == name }
     }

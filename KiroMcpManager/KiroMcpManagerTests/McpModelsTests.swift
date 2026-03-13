@@ -221,4 +221,25 @@ import Testing
         #expect(config.mcpServers.count == 1)
         #expect(config.mcpServers["test-server"]?.isLocal == true)
     }
+
+    @Test func deletingServerFromConfig() throws {
+        let json = #"""
+        {
+            "mcpServers": {
+                "server-a": {"command": "node", "args": ["a.js"]},
+                "server-b": {"url": "https://example.com"}
+            }
+        }
+        """#
+        var config = try JSONDecoder().decode(McpConfig.self, from: Data(json.utf8))
+        #expect(config.mcpServers.count == 2)
+
+        config.mcpServers.removeValue(forKey: "server-a")
+
+        let encoded = try JSONEncoder().encode(config)
+        let decoded = try JSONDecoder().decode(McpConfig.self, from: encoded)
+        #expect(decoded.mcpServers.count == 1)
+        #expect(decoded.mcpServers["server-a"] == nil)
+        #expect(decoded.mcpServers["server-b"]?.isRemote == true)
+    }
 }
