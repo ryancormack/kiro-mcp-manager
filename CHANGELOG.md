@@ -14,5 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Toggle MCP servers on/off
 - View server type (Local/Remote)
 - Disable specific tools per server
+- Add new MCP servers (manual configuration or quick-add presets)
+- Delete MCP servers with confirmation dialog
 - Settings management with grouped categories
 - Security-scoped bookmarks for sandboxed file access
