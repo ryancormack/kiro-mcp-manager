@@ -12,6 +12,7 @@ env:
   APP_NAME: KiroMcpManager
   SCHEME: KiroMcpManager
   PROJECT_PATH: KiroMcpManager/KiroMcpManager.xcodeproj
+  APPLE_CERTIFICATE_BASE64: ${{ secrets.APPLE_CERTIFICATE_BASE64 }}
 
 jobs:
   build:
@@ -60,9 +61,8 @@ jobs:
           cp -R "$APP_PATH" artifacts/
 
       - name: Import signing certificate
-        if: ${{ secrets.APPLE_CERTIFICATE_BASE64 != '' }}
+        if: ${{ env.APPLE_CERTIFICATE_BASE64 != '' }}
         env:
-          APPLE_CERTIFICATE_BASE64: ${{ secrets.APPLE_CERTIFICATE_BASE64 }}
           APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
         run: |
           KEYCHAIN_PATH=$RUNNER_TEMP/signing.keychain-db
@@ -83,7 +83,7 @@ jobs:
           security list-keychain -d user -s $KEYCHAIN_PATH
 
       - name: Sign app
-        if: ${{ secrets.APPLE_CERTIFICATE_BASE64 != '' }}
+        if: ${{ env.APPLE_CERTIFICATE_BASE64 != '' }}
         env:
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
         run: |
@@ -96,7 +96,7 @@ jobs:
             "$APP_PATH"
 
       - name: Notarize app
-        if: ${{ secrets.APPLE_CERTIFICATE_BASE64 != '' }}
+        if: ${{ env.APPLE_CERTIFICATE_BASE64 != '' }}
         env:
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
