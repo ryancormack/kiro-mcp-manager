@@ -42,6 +42,7 @@ struct SettingDefinition {
 let knownSettings: [SettingDefinition] = [
     // Privacy
     SettingDefinition(key: "telemetry.enabled", label: "Telemetry", type: .bool, category: "Privacy", hint: "Enable/disable telemetry collection"),
+    SettingDefinition(key: "cleanup.periodDays", label: "Cleanup Period (days)", type: .number, category: "Privacy", hint: "Automatically delete old conversations, sessions, and knowledge bases after this many days"),
     
     // Chat
     SettingDefinition(key: "chat.defaultModel", label: "Default Model", type: .string, category: "Chat", hint: "Default AI model for conversations"),
