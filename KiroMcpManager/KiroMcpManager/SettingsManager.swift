@@ -82,6 +82,11 @@ final class SettingsManager {
         }
     }
     
+    func getStringArray(for key: String) -> [String] {
+        guard case .array(let items) = values[key] else { return [] }
+        return items.compactMap { if case .string(let s) = $0 { return s } else { return nil } }
+    }
+    
     func setValue(_ value: AnyCodableValue, for key: String) {
         withSettingsURL { url in
             var current: [String: AnyCodableValue] = [:]
@@ -109,6 +114,10 @@ final class SettingsManager {
     
     func setNumber(_ value: Int, for key: String) {
         setValue(.int(value), for: key)
+    }
+    
+    func setStringArray(_ value: [String], for key: String) {
+        setValue(.array(value.map { .string($0) }), for: key)
     }
     
     func deleteValue(for key: String) {
