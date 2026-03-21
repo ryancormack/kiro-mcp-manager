@@ -58,6 +58,10 @@ let knownSettings: [SettingDefinition] = [
     SettingDefinition(key: "chat.enablePromptHints", label: "Prompt Hints", type: .bool, category: "Chat", hint: "Show startup hints with tips and shortcuts"),
     SettingDefinition(key: "chat.enableHistoryHints", label: "History Hints", type: .bool, category: "Chat", hint: "Show conversation history hints"),
     SettingDefinition(key: "chat.uiMode", label: "UI Mode", type: .string, category: "Chat", hint: "UI variant to use"),
+    SettingDefinition(key: "chat.ui", label: "Chat UI", type: .picker, category: "Chat", hint: "Chat UI engine (tui for new TUI experience, legacy for classic interface)", options: [
+        PickerOption(value: "tui", label: "TUI v2"),
+        PickerOption(value: "legacy", label: "Legacy"),
+    ]),
     SettingDefinition(key: "chat.enableContextUsageIndicator", label: "Context Usage Indicator", type: .bool, category: "Chat", hint: "Show context usage percentage in prompt"),
     SettingDefinition(key: "chat.skimCommandKey", label: "Skim Command Key", type: .string, category: "Chat", hint: "Key for fuzzy search command"),
     SettingDefinition(key: "chat.autocompletionKey", label: "Autocompletion Key", type: .string, category: "Chat", hint: "Key for autocompletion hint acceptance"),
