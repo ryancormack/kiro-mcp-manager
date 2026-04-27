@@ -189,28 +189,40 @@ private struct ServerRow: View {
                     Divider()
                         .padding(.vertical, 4)
 
-                    Button(role: .destructive) {
-                        showDeleteConfirmation = true
-                    } label: {
-                        HStack {
-                            Image(systemName: "trash")
-                            Text("Delete Server")
+                    if showDeleteConfirmation {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("Delete \"\(name)\"?")
+                                .font(.callout)
+                                .fontWeight(.medium)
+                            Text("This will permanently remove the server from your configuration.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            HStack {
+                                Button("Cancel") {
+                                    showDeleteConfirmation = false
+                                }
+                                Button("Delete") {
+                                    onDelete()
+                                }
+                                .foregroundStyle(.red)
+                            }
                         }
+                    } else {
+                        Button(role: .destructive) {
+                            showDeleteConfirmation = true
+                        } label: {
+                            HStack {
+                                Image(systemName: "trash")
+                                Text("Delete Server")
+                            }
+                        }
+                        .buttonStyle(.borderless)
                     }
-                    .buttonStyle(.borderless)
                 }
                 .padding(.horizontal, 12)
                 .padding(.leading, 16)
                 .padding(.bottom, 10)
             }
-        }
-        .alert("Delete \"\(name)\"?", isPresented: $showDeleteConfirmation) {
-            Button("Cancel", role: .cancel) { }
-            Button("Delete", role: .destructive) {
-                onDelete()
-            }
-        } message: {
-            Text("This will permanently remove the server from your configuration. This cannot be undone.")
         }
     }
 }
