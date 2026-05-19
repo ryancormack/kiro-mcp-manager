@@ -57,6 +57,7 @@ let knownSettings: [SettingDefinition] = [
         PickerOption(value: "osc9", label: "OSC9"),
     ]),
     SettingDefinition(key: "chat.disableMarkdownRendering", label: "Disable Markdown", type: .bool, category: "Chat", hint: "Disable markdown formatting (classic only)"),
+    SettingDefinition(key: "chat.disableWrap", label: "Disable Wrap", type: .bool, category: "Chat", hint: "Emit chat output without hard line breaks for clean copy-paste; terminal soft-wrap still applies."),
     SettingDefinition(key: "chat.disableAutoCompaction", label: "Disable Auto-Compaction", type: .bool, category: "Chat", hint: "Disable automatic conversation summarization"),
     SettingDefinition(key: "compaction.excludeMessages", label: "Compaction Exclude Messages", type: .number, category: "Chat", hint: "Minimum message pairs to retain during compaction"),
     SettingDefinition(key: "compaction.excludeContextWindowPercent", label: "Compaction Exclude Context %", type: .number, category: "Chat", hint: "Minimum % of context window to retain during compaction"),
@@ -95,11 +96,14 @@ let knownSettings: [SettingDefinition] = [
         PickerOption(value: "Best", label: "Best (Semantic)"),
     ]),
     
-    // Key bindings (classic only)
+    // Key bindings
     SettingDefinition(key: "chat.skimCommandKey", label: "Skim Command Key", type: .string, category: "Key Bindings", hint: "Key for fuzzy search command (classic only)"),
     SettingDefinition(key: "chat.autocompletionKey", label: "Autocompletion Key", type: .string, category: "Key Bindings", hint: "Key for autocompletion hint acceptance (classic only)"),
     SettingDefinition(key: "chat.tangentModeKey", label: "Tangent Mode Key", type: .string, category: "Key Bindings", hint: "Key for tangent mode toggle (classic only)"),
     SettingDefinition(key: "chat.delegateModeKey", label: "Delegate Mode Key", type: .string, category: "Key Bindings", hint: "Key for delegate command (classic only)"),
+    SettingDefinition(key: "chat.keybindings.cancelStream", label: "Cancel Stream", type: .string, category: "Key Bindings", hint: "Cancel the current agent response while it streams"),
+    SettingDefinition(key: "chat.keybindings.closeMenu", label: "Close Menu", type: .string, category: "Key Bindings", hint: "Close overlay panels and pickers"),
+    SettingDefinition(key: "chat.keybindings.quit", label: "Quit", type: .string, category: "Key Bindings", hint: "Exit the chat session"),
     
     // Tool Search
     SettingDefinition(key: "toolSearch.enabled", label: "Enabled", type: .bool, category: "Tool Search", hint: "Enable Tool Search for on-demand MCP tool discovery (default: false)"),
