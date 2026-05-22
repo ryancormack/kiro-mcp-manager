@@ -78,6 +78,14 @@ private struct SettingRow: View {
                 ArraySettingControl(key: setting.key, presets: setting.presets, manager: manager)
             }
             .padding(.vertical, 6)
+        } else if setting.type == .modelDefaults {
+            VStack(alignment: .leading, spacing: 6) {
+                Text(setting.label)
+                    .font(.callout)
+                    .help(setting.hint)
+                ModelDefaultsControl(key: setting.key, manager: manager)
+            }
+            .padding(.vertical, 6)
         } else {
             HStack {
                 Text(setting.label)
@@ -94,7 +102,7 @@ private struct SettingRow: View {
                     NumberSettingControl(key: setting.key, manager: manager)
                 case .picker:
                     PickerSettingControl(key: setting.key, options: setting.options, manager: manager)
-                case .stringArray:
+                case .stringArray, .modelDefaults:
                     EmptyView()
                 }
             }
@@ -283,6 +291,106 @@ private struct PickerSettingControl: View {
         }
         .labelsHidden()
         .frame(width: 140)
+    }
+}
+
+private struct ModelDefaultsControl: View {
+    let key: String
+    @Bindable var manager: SettingsManager
+    @State private var newModelName: String = ""
+    @State private var newModelEffort: String = "high"
+    
+    private static let effortLevels = ["low", "medium", "high"]
+    
+    private var modelDefaults: [String: String] {
+        manager.getModelDefaults(for: key)
+    }
+    
+    private var sortedModels: [String] {
+        modelDefaults.keys.sorted()
+    }
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            // Existing model entries
+            if !sortedModels.isEmpty {
+                VStack(alignment: .leading, spacing: 2) {
+                    ForEach(sortedModels, id: \.self) { model in
+                        HStack {
+                            Button(action: { removeModel(model) }) {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(.red.opacity(0.7))
+                                    .font(.callout)
+                            }
+                            .buttonStyle(.borderless)
+                            
+                            Text(model)
+                                .font(.callout.monospaced())
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                                .truncationMode(.middle)
+                            
+                            Spacer()
+                            
+                            Picker("", selection: effortBinding(for: model)) {
+                                ForEach(Self.effortLevels, id: \.self) { level in
+                                    Text(level.capitalized).tag(level)
+                                }
+                            }
+                            .labelsHidden()
+                            .frame(width: 100)
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+            }
+            
+            // Add new model row
+            HStack(spacing: 8) {
+                TextField("Model name...", text: $newModelName)
+                    .textFieldStyle(.roundedBorder)
+                    .font(.callout)
+                    .onSubmit { addModel() }
+                
+                Picker("", selection: $newModelEffort) {
+                    ForEach(Self.effortLevels, id: \.self) { level in
+                        Text(level.capitalized).tag(level)
+                    }
+                }
+                .labelsHidden()
+                .frame(width: 100)
+                
+                Button("Add") { addModel() }
+                    .disabled(newModelName.trimmingCharacters(in: .whitespaces).isEmpty)
+            }
+            .padding(.top, 2)
+        }
+    }
+    
+    private func effortBinding(for model: String) -> Binding<String> {
+        Binding(
+            get: { modelDefaults[model] ?? "high" },
+            set: { newEffort in
+                var current = modelDefaults
+                current[model] = newEffort
+                manager.setModelDefaults(current, for: key)
+            }
+        )
+    }
+    
+    private func addModel() {
+        let name = newModelName.trimmingCharacters(in: .whitespaces)
+        guard !name.isEmpty else { return }
+        var current = modelDefaults
+        current[name] = newModelEffort
+        manager.setModelDefaults(current, for: key)
+        newModelName = ""
+    }
+    
+    private func removeModel(_ model: String) {
+        var current = modelDefaults
+        current.removeValue(forKey: model)
+        manager.setModelDefaults(current, for: key)
     }
 }
 

@@ -134,6 +134,32 @@ final class SettingsManager {
         loadSettings()
     }
     
+    // MARK: - Model Defaults
+    
+    func getModelDefaults(for key: String) -> [String: String] {
+        guard case .object(let obj) = values[key] else { return [:] }
+        var result: [String: String] = [:]
+        for (model, value) in obj {
+            if case .object(let inner) = value,
+               case .string(let effort) = inner["effort"] {
+                result[model] = effort
+            }
+        }
+        return result
+    }
+    
+    func setModelDefaults(_ defaults: [String: String], for key: String) {
+        var obj: [String: AnyCodableValue] = [:]
+        for (model, effort) in defaults {
+            obj[model] = .object(["effort": .string(effort)])
+        }
+        if obj.isEmpty {
+            deleteValue(for: key)
+        } else {
+            setValue(.object(obj), for: key)
+        }
+    }
+    
     func openInEditor() {
         withSettingsURL { url in
             NSWorkspace.shared.open(url)
