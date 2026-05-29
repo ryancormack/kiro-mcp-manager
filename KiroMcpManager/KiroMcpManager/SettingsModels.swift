@@ -6,6 +6,7 @@ enum SettingType {
     case number
     case stringArray
     case picker
+    case modelDefaults
 }
 
 struct ArrayPreset: Identifiable {
@@ -71,6 +72,7 @@ let knownSettings: [SettingDefinition] = [
     SettingDefinition(key: "chat.disableGranularTrust", label: "Disable Granular Trust", type: .bool, category: "Chat", hint: "Disable tiered trust options for tool approvals (terminal UI only)"),
     SettingDefinition(key: "chat.autoExpandToolOutput", label: "Auto-Expand Tool Output", type: .bool, category: "Chat", hint: "Auto-expand tool output instead of collapsing (terminal UI only)"),
     SettingDefinition(key: "chat.enableContextUsageIndicator", label: "Context Usage Indicator", type: .bool, category: "Chat", hint: "Show context usage percentage in prompt (classic only)"),
+    SettingDefinition(key: "chat.modelDefaults", label: "Model Defaults", type: .modelDefaults, category: "Chat", hint: "Per-model default settings (effort level) applied to new sessions"),
     SettingDefinition(key: "chat.showThinking", label: "Show Thinking", type: .bool, category: "Chat", hint: "Show the agent's reasoning (thinking) blocks in chat output (v2.5.0+). Startup-only"),
     SettingDefinition(key: "chat.historyMode", label: "History Mode", type: .picker, category: "Chat", hint: "Prompt history scope: session (per-session, default) or global (shared across sessions). Set via /settings history; applies on next session", options: [
         PickerOption(value: "session", label: "Session"),
