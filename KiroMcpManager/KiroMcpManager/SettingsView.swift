@@ -105,8 +105,34 @@ private struct SettingRow: View {
                 case .stringArray, .modelDefaults:
                     EmptyView()
                 }
+
+                // Picker already offers a "No default" option; the others need an
+                // explicit way to remove the key (return the setting to its default).
+                if setting.type != .picker {
+                    ClearSettingButton(key: setting.key, manager: manager)
+                }
             }
             .padding(.vertical, 4)
+        }
+    }
+}
+
+private struct ClearSettingButton: View {
+    let key: String
+    @Bindable var manager: SettingsManager
+
+    var body: some View {
+        // Only show when the setting is explicitly present in cli.json. Its
+        // presence also acts as a visual cue that the value overrides the default.
+        if manager.getValue(for: key) != nil {
+            Button {
+                manager.deleteValue(for: key)
+            } label: {
+                Image(systemName: "arrow.uturn.backward.circle")
+                    .foregroundStyle(.secondary)
+            }
+            .buttonStyle(.borderless)
+            .help("Reset to default (remove from cli.json)")
         }
     }
 }
@@ -138,6 +164,10 @@ private struct StringSettingControl: View {
             .frame(width: 140)
             .focused($isFocused)
             .onAppear { text = manager.getString(for: key) ?? "" }
+            .onChange(of: manager.getString(for: key) ?? "") { _, newValue in
+                // Reflect external changes (e.g. the reset button) when not editing.
+                if !isFocused { text = newValue }
+            }
             .onChange(of: isFocused) { _, focused in
                 if !focused && !text.isEmpty {
                     manager.setString(text, for: key)
@@ -156,19 +186,24 @@ private struct NumberSettingControl: View {
     @Bindable var manager: SettingsManager
     @State private var text: String = ""
     @FocusState private var isFocused: Bool
-    
+
+    private static func format(_ num: Double?) -> String {
+        guard let num else { return "" }
+        return num.truncatingRemainder(dividingBy: 1) == 0
+            ? String(Int(num))
+            : String(num)
+    }
+
     var body: some View {
         TextField("", text: $text)
             .textFieldStyle(.roundedBorder)
             .font(.callout)
             .frame(width: 80)
             .focused($isFocused)
-            .onAppear {
-                if let num = manager.getNumber(for: key) {
-                    text = num.truncatingRemainder(dividingBy: 1) == 0 
-                        ? String(Int(num)) 
-                        : String(num)
-                }
+            .onAppear { text = Self.format(manager.getNumber(for: key)) }
+            .onChange(of: manager.getNumber(for: key)) { _, newValue in
+                // Reflect external changes (e.g. the reset button) when not editing.
+                if !isFocused { text = Self.format(newValue) }
             }
             .onChange(of: isFocused) { _, focused in
                 if !focused, let num = Int(text) {

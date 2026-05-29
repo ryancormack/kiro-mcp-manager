@@ -38,11 +38,21 @@ struct AddServerView: View {
 
             Divider()
 
-            if mode == 0 {
-                manualModeView
-            } else {
-                quickAddModeView
+            // Only the form fields scroll; the header, mode picker, validation
+            // message, and action buttons stay pinned so the form never grows
+            // taller than the menu-bar panel and the buttons remain reachable.
+            ScrollView(.vertical, showsIndicators: true) {
+                VStack(alignment: .leading, spacing: 12) {
+                    if mode == 0 {
+                        manualModeView
+                    } else {
+                        quickAddModeView
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical, 2)
             }
+            .frame(minHeight: 50, maxHeight: 360)
 
             if let error = validationError {
                 Text(error)

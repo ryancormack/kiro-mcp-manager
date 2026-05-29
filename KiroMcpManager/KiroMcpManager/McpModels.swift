@@ -106,4 +106,21 @@ struct McpConfig: Codable, Sendable {
     init(mcpServers: [String: McpServer]) {
         self.mcpServers = mcpServers
     }
+
+    private enum CodingKeys: String, CodingKey {
+        case mcpServers
+    }
+
+    /// Decodes tolerantly: a missing `mcpServers` key (e.g. an empty `{}` file,
+    /// which Kiro may create before any servers are configured) is treated as
+    /// an empty server map rather than a decoding error.
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        mcpServers = try container.decodeIfPresent([String: McpServer].self, forKey: .mcpServers) ?? [:]
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(mcpServers, forKey: .mcpServers)
+    }
 }

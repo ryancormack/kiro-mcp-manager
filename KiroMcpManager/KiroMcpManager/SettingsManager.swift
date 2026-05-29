@@ -12,7 +12,15 @@ final class SettingsManager {
     var hasBookmark: Bool {
         UserDefaults.standard.data(forKey: bookmarkKey) != nil
     }
-    
+
+    init() {}
+
+    /// Creates a manager seeded with in-memory values. Used by tests to exercise
+    /// the pure accessors without requiring file-system access.
+    init(values: [String: AnyCodableValue]) {
+        self.values = values
+    }
+
     private func resolveDirectory() -> URL? {
         guard let data = UserDefaults.standard.data(forKey: bookmarkKey) else { return nil }
         do {
@@ -51,13 +59,28 @@ final class SettingsManager {
     }
     
     func loadSettings() {
-        let result: [String: AnyCodableValue]? = withSettingsURL { url -> [String: AnyCodableValue] in
-            guard FileManager.default.fileExists(atPath: url.path) else { return [:] }
-            let data = try Data(contentsOf: url)
-            return try JSONDecoder().decode([String: AnyCodableValue].self, from: data)
+        let outcome: Result<[String: AnyCodableValue], Error>? = withSettingsURL { url in
+            do {
+                guard FileManager.default.fileExists(atPath: url.path) else { return .success([:]) }
+                let data = try Data(contentsOf: url)
+                let decoded = try JSONDecoder().decode([String: AnyCodableValue].self, from: data)
+                return .success(decoded)
+            } catch {
+                return .failure(error)
+            }
         }
-        values = result ?? [:]
-        errorMessage = nil
+
+        switch outcome {
+        case .success(let decoded):
+            values = decoded
+            errorMessage = nil
+        case .failure(let error):
+            values = [:]
+            errorMessage = "Could not parse \(settingsFileName): \(error.localizedDescription)"
+        case .none:
+            values = [:]
+            // No bookmark / access failure. Preserve any errorMessage set by resolveDirectory.
+        }
     }
     
     func getValue(for key: String) -> AnyCodableValue? {
@@ -88,20 +111,32 @@ final class SettingsManager {
     }
     
     func setValue(_ value: AnyCodableValue, for key: String) {
-        withSettingsURL { url in
-            var current: [String: AnyCodableValue] = [:]
-            if FileManager.default.fileExists(atPath: url.path),
-               let data = try? Data(contentsOf: url),
-               let decoded = try? JSONDecoder().decode([String: AnyCodableValue].self, from: data) {
-                current = decoded
+        let outcome: Result<Void, Error>? = withSettingsURL { url in
+            do {
+                var current: [String: AnyCodableValue] = [:]
+                if FileManager.default.fileExists(atPath: url.path) {
+                    let data = try Data(contentsOf: url)
+                    current = try JSONDecoder().decode([String: AnyCodableValue].self, from: data)
+                }
+                current[key] = value
+
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+                try encoder.encode(current).write(to: url)
+                return .success(())
+            } catch {
+                return .failure(error)
             }
-            current[key] = value
-            
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-            try encoder.encode(current).write(to: url)
         }
-        loadSettings()
+
+        switch outcome {
+        case .success:
+            loadSettings()
+        case .failure(let error):
+            errorMessage = "Failed to update \(settingsFileName): \(error.localizedDescription)"
+        case .none:
+            break // withSettingsURL has already set errorMessage describing the access failure.
+        }
     }
     
     func setBool(_ value: Bool, for key: String) {
@@ -121,17 +156,30 @@ final class SettingsManager {
     }
     
     func deleteValue(for key: String) {
-        withSettingsURL { url in
-            guard FileManager.default.fileExists(atPath: url.path),
-                  let data = try? Data(contentsOf: url),
-                  var current = try? JSONDecoder().decode([String: AnyCodableValue].self, from: data) else { return }
-            current.removeValue(forKey: key)
-            
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-            try encoder.encode(current).write(to: url)
+        let outcome: Result<Void, Error>? = withSettingsURL { url in
+            do {
+                guard FileManager.default.fileExists(atPath: url.path) else { return .success(()) }
+                let data = try Data(contentsOf: url)
+                var current = try JSONDecoder().decode([String: AnyCodableValue].self, from: data)
+                current.removeValue(forKey: key)
+
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+                try encoder.encode(current).write(to: url)
+                return .success(())
+            } catch {
+                return .failure(error)
+            }
         }
-        loadSettings()
+
+        switch outcome {
+        case .success:
+            loadSettings()
+        case .failure(let error):
+            errorMessage = "Failed to update \(settingsFileName): \(error.localizedDescription)"
+        case .none:
+            break // withSettingsURL has already set errorMessage describing the access failure.
+        }
     }
     
     // MARK: - Model Defaults
